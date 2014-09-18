@@ -393,12 +393,12 @@ int WINAPI WinMain(	HINSTANCE	hInstance,HINSTANCE	hPrevInstance,LPSTR lpCmdLine,
 					SwapBuffers(hDC);				
 					if(keys[VK_RIGHT])
 					{
-						scena.addHangle(-2.0);
+						scena.addHangle(-0.7);
 					}
 
 					if(keys[VK_LEFT])
 					{
-						scena.addHangle(2.0);
+						scena.addHangle(0.7);
 					}
 
 					if(keys[VK_UP])

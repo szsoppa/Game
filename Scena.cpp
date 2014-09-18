@@ -46,20 +46,19 @@ void Scena::draw(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-bool Scena::wsp(int a, int b, int c) // sprawdza, czy w sasiedztwie punktu a,b,c jest jakas kostka
+bool Scena::wsp(int a, int b, int c) // sprawdza, czy w sasiedztwie punktu a,b,c jest jakas cube
 {
-	bool odp = false;
-	if (tab[a-1][b-1][c] != NULL) odp = true;
-	if (tab[a-1][b][c] != NULL) odp = true;
-	if (tab[a-1][b+1][c] != NULL) odp = true;
+	if (tab[a-1][b-1][c] != NULL) return true;
+	if (tab[a-1][b][c] != NULL) return true;
+	if (tab[a-1][b+1][c] != NULL) return true;
 
-	if (tab[a][b+1][c] != NULL) odp = true;
-	if (tab[a][b-1][c] != NULL) odp = true;
+	if (tab[a][b+1][c] != NULL) return true;
+	if (tab[a][b-1][c] != NULL) return true;
 
-	if (tab[a+1][b-1][c] != NULL) odp = true;
-	if (tab[a+1][b][c] != NULL) odp = true;
-	if (tab[a+1][b+1][c] != NULL) odp = true;
-	return odp;
+	if (tab[a+1][b-1][c] != NULL) return true;
+	if (tab[a+1][b][c] != NULL) return true;
+	if (tab[a+1][b+1][c] != NULL) return true;
+	return false;
 }
 
 int Scena::wsp2(int a, int b, int c) // sprawdza, czy mozna pochylnie postawic
@@ -67,74 +66,54 @@ int Scena::wsp2(int a, int b, int c) // sprawdza, czy mozna pochylnie postawic
 	int odp = 0;
 	if (tab[a-1][b][c] != NULL) 
 	{
-		if ((tab[a-1][b][c]->typ != 4)&&(tab[a-1][b][c+1] == NULL)&&(tab[a+1][b][c] == NULL))
+		if ((tab[a-1][b][c]->type != Ramp)&&(tab[a-1][b][c+1] == NULL)&&(tab[a+1][b][c] == NULL))
 		odp = 4;
 		if (c > 1)
-		if (tab[a-1][b][c-1]->typ != 1)
+		if (tab[a-1][b][c-1]->type != Cube)
 		odp = 0;
 	}
 	if (tab[a][b+1][c] != NULL) 
 	{
-		if ((tab[a][b+1][c]->typ != 4)&&(tab[a][b+1][c+1] == NULL)&&(tab[a][b-1][c] == NULL))
+		if ((tab[a][b+1][c]->type != Ramp)&&(tab[a][b+1][c+1] == NULL)&&(tab[a][b-1][c] == NULL))
 		odp = 1;
 		if (c > 1)
-		if (tab[a][b+1][c-1]->typ != 1)
+		if (tab[a][b+1][c-1]->type != Cube)
 		odp = 0;
 	}
 	if (tab[a][b-1][c] != NULL)
 	{
-		if ((tab[a][b-1][c]->typ != 4)&&(tab[a][b-1][c+1] == NULL)&&(tab[a][b+1][c] == NULL))
+		if ((tab[a][b-1][c]->type != Ramp)&&(tab[a][b-1][c+1] == NULL)&&(tab[a][b+1][c] == NULL))
 		odp = 3;
 		if (c > 1)
-		if (tab[a][b-1][c-1]->typ != 1)
+		if (tab[a][b-1][c-1]->type != Cube)
 		odp = 0;
 	}
 	if (tab[a+1][b][c] != NULL) 
 	{
-		if ((tab[a+1][b][c]->typ != 4)&&(tab[a+1][b][c] == NULL)&&(tab[a-1][b][c] == NULL))
+		if ((tab[a+1][b][c]->type != Ramp)&&(tab[a+1][b][c] == NULL)&&(tab[a-1][b][c] == NULL))
 		odp = 2;
 		if (c > 1)
-		if (tab[a+1][b][c-1]->typ != 1)
+		if (tab[a+1][b][c-1]->type != Cube)
 		odp = 0;
 	}
 	return odp;
 }
 
-void Scena::generator(void)
-{
-	float x = 0;
-	float y = 0;
-	for (int i = 0; i < 20; i++) { //dol
-		for (int j = 0; j < 20; j++)
-		{
-			tab[i][j][0] = new Obiekt1(x,0.0,y);
-			x += 4.0;
-		}
-		y+=4.0;
-		x=0.0;
-	}
-
-	tab[1][1][1] = new Obiekt1(1*4, 4, 1*4);
-	tab[18][1][1] = new Obiekt1(18*4, 4, 1*4);
-	tab[18][18][1] = new Obiekt1(18*4, 4, 18*4);
-	tab[10][10][1] = new Obiekt1(10*4, 4, 10*4);
-	tab[1][18][1] = new Obiekt1(1*4, 4, 18*4);
-	for (int i = 0; i < 180; i++) // 180 na 1
+void Scena::generateCubes_1lvl(){
+	for (int i = 0; i < CUBES_NUMBER_LEVEL1; i++) // randomly generate cubes at 1st level
 	{
-		int a = 13, b = 12;
+		int a = 0, b = 0;
 		while ((tab[a][b][1] != NULL)||(!wsp(a,b,1)))
 		{
-			a = rand()%18 + 1;
-			b = rand()%18 + 1;
+			a = rand()%(SCENE_WIDTH-2) + 1;
+			b = rand()%(SCENE_DEPTH-2) + 1;
 		}
-		tab[a][b][1] = new Obiekt1(a * 4, 4, b * 4);
+		tab[a][b][1] = new cube(a, 1, b);
 	}
-	tab[1][1][2] = new Obiekt1(1*4, 8, 1*4);
-	tab[18][1][2] = new Obiekt1(18*4, 8, 1*4);
-	tab[18][18][2] = new Obiekt1(18*4, 8, 18*4);
-	tab[1][18][2] = new Obiekt1(1*4, 8, 18*4);
-	tab[10][10][2] = new Obiekt1(10*4, 8, 10*4);
-	for (int i = 0; i < 100; i++) // 100 na 2.
+}
+
+void Scena::generateCubes_2lvl(){
+	for (int i = 0; i < CUBES_NUMBER_LEVEL2; i++) // randomly generate cubes at 2nd level
 	{
 		int a = 0, b = 0;
 		while ((tab[a][b][2] != NULL)||(tab[a][b][1] == NULL)||(!wsp(a,b,2)))
@@ -142,81 +121,94 @@ void Scena::generator(void)
 			a = rand()%20;
 			b = rand()%20;
 		}
-		tab[a][b][2] = new Obiekt1(a * 4, 8, b * 4);
+		tab[a][b][2] = new cube(a, 2, b);
 	}
+}
+
+void Scena::rampDirection(int checkDirection, Obiekt *ramp){
 	
-	
-	for (int i = 0; i < 40; i++) // pochylnie na poziomie 1.
+	switch(checkDirection){
+		case 1:
+				ramp->kierunek[0] = 0;
+				ramp->kierunek[1] = 1;
+				break;
+
+		case 2:
+				ramp->kierunek[0] = -1;
+				ramp->kierunek[1] = 0;
+				break;
+				
+		case 3:
+				ramp->kierunek[0] = 0;
+				ramp->kierunek[1] = -1;
+				break;
+
+		case 4:
+				ramp->kierunek[0] = 1;
+				ramp->kierunek[1] = 0;
+				break;
+	}
+}
+
+void Scena::generateRamps_1lvl(){
+	for (int i = 0; i < RAMPS_NUMBER_LEVEL1; i++) // randomly generate ramps on 1st level
 	{
 		int a = 0, b = 0;
 		while ((tab[a][b][3] != NULL)||(tab[a][b][2] != NULL)||(tab[a][b][1] != NULL)
 			||(wsp2(a, b, 1) == 0))
 		{
-			a = 1 + rand()%18;
-			b = 1 + rand()%18;
+			a = rand()%(SCENE_WIDTH-2) + 1;
+			b = rand()%(SCENE_DEPTH-2) + 1;
 		}
-		int tmp = wsp2(a, b, 1);
-		tab[a][b][1] = new Obiekt4(a * 4, 4, b * 4);
-		if (tmp == 1)
-		{
-			tab[a][b][1]->kierunek[0] = 0;
-			tab[a][b][1]->kierunek[1] = 1;
-		}
-
-		if (tmp == 4)
-		{
-			tab[a][b][1]->kierunek[0] = 1;
-			tab[a][b][1]->kierunek[1] = 0;
-		}
-
-		if (tmp == 3)
-		{
-			tab[a][b][1]->kierunek[0] = 0;
-			tab[a][b][1]->kierunek[1] = -1;
-		}
-
-		if (tmp == 2)
-		{
-			tab[a][b][1]->kierunek[0] = -1;
-			tab[a][b][1]->kierunek[1] = 0;
-		}
+		tab[a][b][1] = new ramp(a, 1, b);
+		rampDirection(wsp2(a, b, 1), tab[a][b][1]);
 	}
+}
 
-	for (int i = 0; i < 20; i++) // pochylnie na poziomie 2.
+void Scena::generateRamps_2lvl(){
+	for (int i = 0; i < RAMPS_NUMBER_LEVEL2; i++)
 	{
 		int a = 0, b = 0;
-		while ((tab[a][b][1] == NULL)||(tab[a][b][1]->typ != 1)||(tab[a][b][2] != NULL)||(tab[a][b][3] != NULL)
+		while ((tab[a][b][1] == NULL)||(tab[a][b][1]->type != Cube)||(tab[a][b][2] != NULL)||(tab[a][b][3] != NULL)
 			||(wsp2(a, b, 2) == 0))
 		{
-			a = 1 + rand()%18;
-			b = 1 + rand()%18;
+			a = rand()%(SCENE_WIDTH-2) + 1;
+			b = rand()%(SCENE_DEPTH-2) + 1;
 		}
-		int tmp = wsp2(a, b, 2);
-		tab[a][b][2] = new Obiekt4(a * 4, 8, b * 4);
-		if (tmp == 1)
-		{
-			tab[a][b][2]->kierunek[0] = 0;
-			tab[a][b][2]->kierunek[1] = 1;
-		}
+		tab[a][b][2] = new ramp(a, 2, b);
+		rampDirection(wsp2(a, b, 2), tab[a][b][2]);
+	}
+}
 
-		if (tmp == 4)
-		{
-			tab[a][b][2]->kierunek[0] = 1;
-			tab[a][b][2]->kierunek[1] = 0;
-		}
+void Scena::generateCubes(){
+	generateCubes_1lvl();
+	generateCubes_2lvl();
+}
 
-		if (tmp == 3)
-		{
-			tab[a][b][2]->kierunek[0] = 0;
-			tab[a][b][2]->kierunek[1] = -1;
-		}
+void Scena::generateRamps(){
+	generateRamps_1lvl();
+	generateRamps_2lvl();
+}
 
-		if (tmp == 2)
+void Scena::generateFloor(){
+
+	for (int x = 0; x < SCENE_WIDTH; x++) {
+		for (int y = 0; y < SCENE_DEPTH; y++)
 		{
-			tab[a][b][2]->kierunek[0] = -1;
-			tab[a][b][2]->kierunek[1] = 0;
+			tab[x][y][0] = new cube(x,0,y);
 		}
 	}
+}
+
+
+void Scena::generator(void)
+{
+	generateFloor();
+	tab[1][18][1] = new cube(1, 1, 18);
+	tab[10][10][2] = new cube(10, 2, 10);
+	generateCubes();
+	generateRamps();
+	
 }
 
 AUX_RGBImageRec * Scena::LoadBMP(char *Filename)
@@ -269,7 +261,7 @@ void Scena::step(int i)
 {
 	double tx, tz;
 	double dox, doz;
-	dist = 0.25;
+	dist = 0.05;
     tx = dist * sin(hangle * pi);
 	tz = dist * cos(hangle * pi);
 	dox = ox + 2*(i * tx);
@@ -282,8 +274,8 @@ void Scena::step(int i)
 	{
 		if ((oy >= 3.0) && (oy < 6.5))
 		{
-			// jest na 0 i jest przed nim pochylnia
-			if ((tab[nx][nz][1]!= NULL)&&(tab[nx][nz][1]->typ==4))
+			// jest na 0 i jest przed nim ramp
+			if ((tab[nx][nz][1]!= NULL)&&(tab[nx][nz][1]->type==Ramp))
 			{
 				ox = dox - (i * tx);
 				oz = doz - (i * tz);
@@ -299,8 +291,8 @@ void Scena::step(int i)
 
 		if ((oy >= 6.5) && (oy < 10.5))
 		{
-			// jest na 1 i jest przed nim pochylnia
-			if ((tab[nx][nz][2]!= NULL)&&(tab[nx][nz][2]->typ==4))
+			// jest na 1 i jest przed nim ramp
+			if ((tab[nx][nz][2]!= NULL)&&(tab[nx][nz][2]->type==Ramp))
 			{
 				ox = dox - (i * tx);
 				oz = doz - (i * tz);
@@ -338,7 +330,7 @@ void Scena::step(int i)
 	} else
 	if (tab[nx][nz][1] != NULL) 
 	{
-		oy = 7.0 + + tab[nx][nz][1]->getY(ox, oz);
+		oy = 7.0 + tab[nx][nz][1]->getY(ox, oz);
 	} else
 		oy = 3.0;
 

@@ -3,6 +3,8 @@
 
 #include <windows.h>
 #include <gl/gl.h>
+#include "global.h"
+
 #define SIZE 2.0f
 
 class Obiekt
@@ -20,14 +22,10 @@ class Obiekt
 		void setPosition(float X, float Y, float Z);
 		virtual void draw(void);
 		
-		void setWsp(int i);
-		bool decWsp(int i);
-
-		void startFall(float nz);
 		void calc(void);
 
-		int typ;
-		virtual float getY(float x, float z) { return 0; };
+		objectType type;
+		virtual double getY(float x, float z) { return 0; };
 
 		int kierunek[2];
 };

@@ -26,28 +26,8 @@ void Obiekt::setPosition(float X, float Y, float Z)
 	dy = 0.005f;
 }
 
-void Obiekt::setWsp(int i) // ustawia wsp zniszczenia
-{
-    wsp = i;
-}
-
-bool Obiekt::decWsp(int i) // dekrementuje wsp zniszczenia
-{
-    if (!fall)
-	{
-		wsp -= i;
-		if (wsp > 0) return false;
-	} else return false;
-	return true;
-}
-
 void Obiekt::draw(void) { }
 
-void Obiekt::startFall(float az)
-{
-	fall = true;
-	ny = az;
-}
 
 void Obiekt::calc(void)
 {

@@ -1,0 +1,34 @@
+﻿Kompilacja rozpoczęła się 2014-09-18 21:32:10.
+     1>Projekt „C:\Users\szpil_000\Documents\GitHub\Game\plansza.vcxproj” w węźle 2 (elementy docelowe: Build).
+     1>ClCompile:
+         D:\Pliki programów (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Scena.cpp cube.cpp obiekt.cpp plansza.cpp ramp.cpp
+         Scena.cpp
+     1>c:\users\szpil_000\documents\github\game\scena.cpp(221): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\pliki programów (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218): zobacz deklarację "fopen"
+     1>c:\users\szpil_000\documents\github\game\scena.cpp(325): warning C4244: "argument" : konwersja z "double" do "float", możliwa utrata danych
+     1>c:\users\szpil_000\documents\github\game\scena.cpp(329): warning C4244: "argument" : konwersja z "double" do "float", możliwa utrata danych
+     1>c:\users\szpil_000\documents\github\game\scena.cpp(333): warning C4244: "argument" : konwersja z "double" do "float", możliwa utrata danych
+         cube.cpp
+     1>c:\users\szpil_000\documents\github\game\cube.cpp(9): warning C4244: "argument" : konwersja z "double" do "float", możliwa utrata danych
+         obiekt.cpp
+         plansza.cpp
+     1>c:\users\szpil_000\documents\github\game\plansza.cpp(121): warning C4244: "argument" : konwersja z "time_t" do "unsigned int", możliwa utrata danych
+         ramp.cpp
+     1>c:\users\szpil_000\documents\github\game\ramp.cpp(11): warning C4244: "argument" : konwersja z "double" do "float", możliwa utrata danych
+     1>c:\users\szpil_000\documents\github\game\ramp.cpp(26): warning C4244: "=" : konwersja z "double" do "float", możliwa utrata danych
+     1>c:\users\szpil_000\documents\github\game\ramp.cpp(31): warning C4244: "=" : konwersja z "double" do "float", możliwa utrata danych
+     1>c:\users\szpil_000\documents\github\game\ramp.cpp(39): warning C4244: "=" : konwersja z "double" do "float", możliwa utrata danych
+     1>c:\users\szpil_000\documents\github\game\ramp.cpp(43): warning C4244: "=" : konwersja z "double" do "float", możliwa utrata danych
+         Generowanie kodu...
+       Link:
+         D:\Pliki programów (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug/plansza.exe" /INCREMENTAL /NOLOGO opengl32.lib glu32.lib glaux.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:".\Debug/plansza.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\plansza.lib" /MACHINE:X86 /SAFESEH /MACHINE:I386 .\Debug/obiekt.obj
+         .\Debug/cube.obj
+         .\Debug/ramp.obj
+         .\Debug/plansza.obj
+         .\Debug/Scena.obj
+         plansza.vcxproj -> C:\Users\szpil_000\Documents\GitHub\Game\.\Debug\plansza.exe
+     1>Kompilowanie projektu „C:\Users\szpil_000\Documents\GitHub\Game\plansza.vcxproj” wykonane (elementy docelowe: Build).
+
+Kompilacja powiodła się.
+
+Czas, który upłynął: 00:00:03.00

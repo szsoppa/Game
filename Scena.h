@@ -8,12 +8,9 @@
 #include <fstream>
 
 #include "obiekt.h"
-#include "obiekt1.h"
-#include "obiekt2.h"
-#include "obiekt3.h"
-#include "obiekt4.h"
-#include "obiekt5.h"
-#include "obiekt6.h"
+#include "cube.h"
+#include "ramp.h"
+#include "global.h"
 
 using namespace std;
 
@@ -36,6 +33,18 @@ private:
 
 	bool wsp(int a, int b, int c); //sasiedztwa od planszy
 	int wsp2(int a, int b, int c); // od pochylni
+
+	void rampDirection(int checkDirection, Obiekt *ramp);
+
+	void generateRamps_1lvl();
+	void generateCubes_1lvl();
+	void generateRamps_2lvl();
+	void generateCubes_2lvl();
+
+	void generateRamps();
+	void generateCubes();
+
+	void generateFloor();
 
 public:
 	Scena(void);

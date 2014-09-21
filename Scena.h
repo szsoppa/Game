@@ -7,17 +7,16 @@
 #include <stdio.h>
 #include <fstream>
 
-#include "obiekt.h"
 #include "cube.h"
 #include "ramp.h"
-#include "global.h"
 
 using namespace std;
 
 class Scena
 {
 private:
-	GLuint texture[1];
+	TGAImg texture[1];
+	GLuint tex[2];
 
 	(Obiekt *) tab[20][20][4]; //plansza
 
@@ -32,7 +31,7 @@ private:
 	double angle;
 
 	bool wsp(int a, int b, int c); //sasiedztwa od planszy
-	int wsp2(int a, int b, int c); // od pochylni
+	int checkIfRampPossible(int a, int b, int c); // od pochylni
 
 	void rampDirection(int checkDirection, Obiekt *ramp);
 

@@ -5,8 +5,6 @@
 #include <gl/gl.h>
 #include "global.h"
 
-#define SIZE 2.0f
-
 class Obiekt
 {
 	protected:
@@ -29,5 +27,6 @@ class Obiekt
 
 		int kierunek[2];
 };
+
 
 #endif

@@ -15,18 +15,18 @@ Scena::Scena(void)
 	calcCamera(); // ustawia pozycje kamery
 	ox = oz = 0.0;
 	oy = 3.0;
-	for (int i = 0; i < 20; i++)
-		for (int j = 0; j < 20; j++)
-			for (int k = 0; k < 4; k++)
+	for (int i = 0; i < SCENE_WIDTH; i++)
+		for (int j = 0; j < SCENE_DEPTH; j++)
+			for (int k = 0; k < SCENE_LEVELS; k++)
 				tab[i][j][k] = NULL;
 	generator();
 }
 
 Scena::~Scena(void)
 {
-	for (int i = 0; i < 20; i++)
-		for (int j = 0; j < 20; j++)
-			for (int k = 0; k < 4; k++)
+	for (int i = 0; i < SCENE_WIDTH; i++)
+		for (int j = 0; j < SCENE_DEPTH; j++)
+			for (int k = 0; k < SCENE_LEVELS; k++)
 				if (tab[i][j][k] != NULL) delete tab[i][j][k];
 }
 
@@ -34,11 +34,11 @@ Scena::~Scena(void)
 void Scena::draw(void)
 {
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glBindTexture(GL_TEXTURE_2D, tex[0]);
 	glTranslated(2.0, 0.0, 2.0);
-	for (int i = 0; i < 20; i++)
-		for (int j = 0; j < 20; j++)
-			for (int k = 0; k < 4; k++)
+	for (int i = 0; i < SCENE_WIDTH; i++)
+		for (int j = 0; j < SCENE_DEPTH; j++)
+			for (int k = 0; k < SCENE_LEVELS; k++)
 			{
 				if (tab[i][j][k] != NULL)
 					tab[i][j][k]->draw();
@@ -61,7 +61,7 @@ bool Scena::wsp(int a, int b, int c) // sprawdza, czy w sasiedztwie punktu a,b,c
 	return false;
 }
 
-int Scena::wsp2(int a, int b, int c) // sprawdza, czy mozna pochylnie postawic
+int Scena::checkIfRampPossible(int a, int b, int c) // sprawdza, czy mozna pochylnie postawic
 {
 	int odp = 0;
 	if (tab[a-1][b][c] != NULL) 
@@ -102,7 +102,7 @@ int Scena::wsp2(int a, int b, int c) // sprawdza, czy mozna pochylnie postawic
 void Scena::generateCubes_1lvl(){
 	for (int i = 0; i < CUBES_NUMBER_LEVEL1; i++) // randomly generate cubes at 1st level
 	{
-		int a = 0, b = 0;
+		int a = 1, b = 1;
 		while ((tab[a][b][1] != NULL)||(!wsp(a,b,1)))
 		{
 			a = rand()%(SCENE_WIDTH-2) + 1;
@@ -153,30 +153,30 @@ void Scena::rampDirection(int checkDirection, Obiekt *ramp){
 void Scena::generateRamps_1lvl(){
 	for (int i = 0; i < RAMPS_NUMBER_LEVEL1; i++) // randomly generate ramps on 1st level
 	{
-		int a = 0, b = 0;
+		int a = 1, b = 1;
 		while ((tab[a][b][3] != NULL)||(tab[a][b][2] != NULL)||(tab[a][b][1] != NULL)
-			||(wsp2(a, b, 1) == 0))
+			||(checkIfRampPossible(a, b, 1) == 0))
 		{
 			a = rand()%(SCENE_WIDTH-2) + 1;
 			b = rand()%(SCENE_DEPTH-2) + 1;
 		}
 		tab[a][b][1] = new ramp(a, 1, b);
-		rampDirection(wsp2(a, b, 1), tab[a][b][1]);
+		rampDirection(checkIfRampPossible(a, b, 1), tab[a][b][1]);
 	}
 }
 
 void Scena::generateRamps_2lvl(){
 	for (int i = 0; i < RAMPS_NUMBER_LEVEL2; i++)
 	{
-		int a = 0, b = 0;
+		int a = 1, b = 1;
 		while ((tab[a][b][1] == NULL)||(tab[a][b][1]->type != Cube)||(tab[a][b][2] != NULL)||(tab[a][b][3] != NULL)
-			||(wsp2(a, b, 2) == 0))
+			||(checkIfRampPossible(a, b, 2) == 0))
 		{
 			a = rand()%(SCENE_WIDTH-2) + 1;
 			b = rand()%(SCENE_DEPTH-2) + 1;
 		}
 		tab[a][b][2] = new ramp(a, 2, b);
-		rampDirection(wsp2(a, b, 2), tab[a][b][2]);
+		rampDirection(checkIfRampPossible(a, b, 2), tab[a][b][2]);
 	}
 }
 
@@ -229,46 +229,47 @@ AUX_RGBImageRec * Scena::LoadBMP(char *Filename)
 
 int Scena::LoadGLTextures(int index, char *Filename)
 {
-	int Status=FALSE;
-	AUX_RGBImageRec *TextureImage[1];
-	memset(TextureImage,0,sizeof(void *)*1);
-	if (TextureImage[0]=LoadBMP(Filename))
-	{
-		Status=TRUE;
-		glGenTextures(1, &texture[index]);
-		glBindTexture(GL_TEXTURE_2D, texture[index]);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
-	}
-	if (TextureImage[0])
-	{
-		if (TextureImage[0]->data)
-		{
-			free(TextureImage[0]->data);
-		}
-		free(TextureImage[0]);
-	}
-	return Status;	
+	if (texture[index].Load(Filename)==IMG_OK) {
+  glGenTextures(1,&tex[index]); //Zainicjuj uchwyt tex
+  glBindTexture(GL_TEXTURE_2D,tex[index]); //Przetwarzaj uchwyt tex
+  if (texture[index].GetBPP()==24) //Obrazek 24bit
+   glTexImage2D(GL_TEXTURE_2D,0,3,texture[index].GetWidth(),texture[index].GetHeight(),0,
+    GL_RGB,GL_UNSIGNED_BYTE,texture[index].GetImg());
+  else if (texture[index].GetBPP()==32) //Obrazek 32bit
+   glTexImage2D(GL_TEXTURE_2D,0,4,texture[index].GetWidth(),texture[index].GetHeight(),0,
+    GL_RGBA,GL_UNSIGNED_BYTE,texture[index].GetImg());
+  else {
+   //Obrazek 16 albo 8 bit, takimi siê nie przejmujemy
+  }
+  } else {
+ //b³¹d
+  }
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  return TRUE;
 }
 
 void Scena::loadTexture(void) 
 {
-	LoadGLTextures(0, "mur.bmp");
+	LoadGLTextures(0, "mur.tga");
 }
 
 void Scena::step(int i)
 {
 	double tx, tz;
 	double dox, doz;
-	dist = 0.05;
+	dist = 0.03;
     tx = dist * sin(hangle * pi);
 	tz = dist * cos(hangle * pi);
 	dox = ox + 2*(i * tx);
 	doz = oz + 2*(i * tz);
 	
-	int nx = (int)(dox / 4.0);
-	int nz = (int)(doz / 4.0);
+	int nx = (int)(dox / CUBE_SIZE);
+	int nz = (int)(doz / CUBE_SIZE);
 
 	if ((dox >= 0) && (doz >=0) && (dox <= 80) && (doz <= 80))
 	{
@@ -317,22 +318,22 @@ void Scena::step(int i)
 			}
 		}
 	}
-	nx = (int)(ox / 4.0);
-	nz = (int)(oz / 4.0);
+	nx = (int)(ox / CUBE_SIZE);
+	nz = (int)(oz / CUBE_SIZE);
 
 	if (tab[nx][nz][3] != NULL) 
 	{
-		oy = 15.0 + tab[nx][nz][3]->getY(ox, oz);
+		oy = 4*CUBE_SIZE-1 + tab[nx][nz][3]->getY(ox, oz);
 	} else
 	if (tab[nx][nz][2] != NULL) 
 	{
-		oy = 11.0 + tab[nx][nz][2]->getY(ox, oz);
+		oy = 3*CUBE_SIZE-1 + tab[nx][nz][2]->getY(ox, oz);
 	} else
 	if (tab[nx][nz][1] != NULL) 
 	{
-		oy = 7.0 + tab[nx][nz][1]->getY(ox, oz);
+		oy = 2*CUBE_SIZE-1 + tab[nx][nz][1]->getY(ox, oz);
 	} else
-		oy = 3.0;
+		oy = CUBE_SIZE-1;
 
 }
 

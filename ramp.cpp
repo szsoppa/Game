@@ -16,19 +16,19 @@ ramp::ramp(int X, int Y, int Z) : Obiekt(X*CUBE_SIZE, Y*CUBE_SIZE, Z*CUBE_SIZE)
 
 double ramp::getY(float ox, float oz)
 {
-	int nx = (int)(ox / 4.0);
-	int nz = (int)(oz / 4.0);
+	int nx = (int)(ox / CUBE_SIZE);
+	int nz = (int)(oz / CUBE_SIZE);
 	float y = 0;
 	if (kierunek[1] == 0)
 	{
 		if (kierunek[0] == 1)
 		{
-			y = 4.0 + (-1)*(ox - 4.0 * nx);	
+			y = CUBE_SIZE + (-1)*(ox - CUBE_SIZE * nx);	
 		}
 		if (kierunek[0] ==-1)
 		{
 			
-			y = ox - 4.0 * nx;
+			y = ox - CUBE_SIZE * nx;
 		}
 	}
 
@@ -36,21 +36,21 @@ double ramp::getY(float ox, float oz)
 	{
 		if (kierunek[1] == 1)
 		{
-			y = oz - 4.0 * nz;
+			y = oz - CUBE_SIZE * nz;
 		}
 		if (kierunek[1] ==-1)
 		{
-			y = 4.0 + (-1)*(oz - 4.0 * nz);
+			y = CUBE_SIZE + (-1)*(oz - CUBE_SIZE * nz);
 		}
 	}
 
-	return y - 4.0;
+	return y - CUBE_SIZE;
 }
 
 void ramp::draw(void) {
     glPushMatrix();
     glTranslatef(x, y, z);
-    //glPushMatrix();
+    glPushMatrix();
 	if (kierunek[1] == 1)
 	{
 		glRotatef(180.0, 0.0, 1.0, 0.0);

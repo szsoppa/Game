@@ -1,12 +1,6 @@
 #include <windows.h>		
-#include <gl\gl.h>			
-#include <gl\glu.h>			
-#include <gl\glaux.h>		
 #include "Scena.h"
 #include <time.h>
-
-#define SIZE 2.0f
-
 Scena scena;
 
 HDC			hDC=NULL;	
@@ -52,71 +46,6 @@ int InitGL(GLvoid)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
     glEnable(GL_NORMALIZE);
 
-	glNewList(1, GL_COMPILE);    // sciana kostki     
-	glBegin(GL_QUADS);
-        glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(-SIZE, SIZE, SIZE);
-
-        glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(SIZE, SIZE, SIZE);
-
-        glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(SIZE, -SIZE, SIZE);
-
-        glNormal3f(0.0f, 0.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(-SIZE, -SIZE, SIZE);
-        glEnd();
-    glEndList();
-    
-    // od pochylni
-    glNewList(13, GL_COMPILE);         
-	glBegin(GL_QUADS); //gora
-        glNormal3f(0.0f, 1.0f, 0.0f);
-		glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(-SIZE, SIZE, -SIZE);
-        glNormal3f(0.0f, 1.0f, 0.0f);
-		glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(SIZE, SIZE, -SIZE);
-		glTexCoord2f(1.0f, 0.0f);
-        glNormal3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(SIZE, -SIZE, SIZE);
-		glTexCoord2f(0.0f, 0.0f);
-        glNormal3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(-SIZE, -SIZE, SIZE);
-        glEnd();
-    glEndList();
-    
-    glNewList(14, GL_COMPILE);         
-	glBegin(GL_TRIANGLES); //bok lewy
-        glNormal3f(-1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(-SIZE, SIZE, -SIZE);
-        glNormal3f(-1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(-SIZE, -SIZE, -SIZE);
-		glTexCoord2f(1.0f, 0.0f);
-        glNormal3f(-1.0f, -1.0f, 1.0f);
-        glVertex3f(-SIZE, -SIZE, SIZE);
-        glEnd();
-    glEndList();
-    
-    glNewList(15, GL_COMPILE);         
-	glBegin(GL_TRIANGLES); //bok prawy
-        glNormal3f(1.0f, 1.0f, -1.0f);
-		glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(SIZE, SIZE, -SIZE);
-        glNormal3f(1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(SIZE, -SIZE, -SIZE);
-        glNormal3f(1.0f, -1.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(SIZE, -SIZE, SIZE);
-        glEnd();
-    glEndList();
 
 	srand(time(NULL));
 	glMatrixMode(GL_MODELVIEW);
@@ -128,7 +57,17 @@ int DrawGLScene(GLvoid)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
     glLoadIdentity();
-	gluLookAt(scena.ox, scena.oy, scena.oz, scena.cz + scena.ox, scena.cy + scena.oy, scena.cx + scena.oz, 0.0, 1.0, 0.0);
+	glm::mat4 M;
+	V = glm::lookAt(
+		glm::vec3(scena.ox, scena.oy, scena.oz),
+		glm::vec3(scena.cz + scena.ox, scena.cy + scena.oy, scena.cx + scena.oz),
+		glm::vec3(0.0, 1.0, 0.0)
+		);	
+	glm::mat4 P=glm::perspective(90.0f, 1.0f, 0.1f, 50.0f);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(glm::value_ptr(P));
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(glm::value_ptr(V*M));
 	scena.draw();
 	return TRUE;										
 }

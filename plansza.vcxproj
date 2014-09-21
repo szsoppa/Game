@@ -128,6 +128,7 @@
     <ClCompile Include="ramp.cpp" />
     <ClCompile Include="plansza.cpp" />
     <ClCompile Include="Scena.cpp" />
+    <ClCompile Include="tga.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="cube.h" />
     <ClInclude Include="ramp.h" />
     <ClInclude Include="Scena.h" />
+    <ClInclude Include="tga.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -96,7 +96,6 @@ static float rampRightCoord[3][2] = {
 		{0.0f, 0.0f}
 	};
 
-extern glm::mat4 V;
 
 typedef enum objectType{
 	Cube,

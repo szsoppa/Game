@@ -20,7 +20,6 @@ private:
 
 	(Obiekt *) tab[20][20][4]; //plansza
 
-	AUX_RGBImageRec * LoadBMP(char *Filename);
 	int LoadGLTextures(int index, char *Filename);
 
 	
@@ -48,7 +47,7 @@ private:
 public:
 	Scena(void);
 	~Scena(void);
-	void draw(void);
+	void draw(glm::mat4 ModelView);
 	void loadTexture(void);
 	
 	double cx, cy, cz; //punkt na ktory, patrzy kamera

@@ -31,7 +31,7 @@ Scena::~Scena(void)
 }
 
 
-void Scena::draw(void)
+void Scena::draw(glm::mat4 ModelView)
 {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
@@ -41,7 +41,7 @@ void Scena::draw(void)
 			for (int k = 0; k < SCENE_LEVELS; k++)
 			{
 				if (tab[i][j][k] != NULL)
-					tab[i][j][k]->draw();
+					tab[i][j][k]->draw(ModelView);
 			}
 	glDisable(GL_TEXTURE_2D);
 }
@@ -129,23 +129,23 @@ void Scena::rampDirection(int checkDirection, Obiekt *ramp){
 	
 	switch(checkDirection){
 		case 1:
-				ramp->kierunek[0] = 0;
-				ramp->kierunek[1] = 1;
+				ramp->direction[0] = 0;
+				ramp->direction[1] = 1;
 				break;
 
 		case 2:
-				ramp->kierunek[0] = -1;
-				ramp->kierunek[1] = 0;
+				ramp->direction[0] = -1;
+				ramp->direction[1] = 0;
 				break;
 				
 		case 3:
-				ramp->kierunek[0] = 0;
-				ramp->kierunek[1] = -1;
+				ramp->direction[0] = 0;
+				ramp->direction[1] = -1;
 				break;
 
 		case 4:
-				ramp->kierunek[0] = 1;
-				ramp->kierunek[1] = 0;
+				ramp->direction[0] = 1;
+				ramp->direction[1] = 0;
 				break;
 	}
 }
@@ -211,22 +211,6 @@ void Scena::generator(void)
 	
 }
 
-AUX_RGBImageRec * Scena::LoadBMP(char *Filename)
-{
-	FILE *File=NULL;
-	if (!Filename)
-	{
-		return NULL;
-	}
-	File=fopen(Filename,"r");
-	if (File)
-	{
-		fclose(File);
-		return auxDIBImageLoad(Filename);
-	}
-	return NULL;
-}
-
 int Scena::LoadGLTextures(int index, char *Filename)
 {
 	if (texture[index].Load(Filename)==IMG_OK) {
@@ -239,10 +223,10 @@ int Scena::LoadGLTextures(int index, char *Filename)
    glTexImage2D(GL_TEXTURE_2D,0,4,texture[index].GetWidth(),texture[index].GetHeight(),0,
     GL_RGBA,GL_UNSIGNED_BYTE,texture[index].GetImg());
   else {
-   //Obrazek 16 albo 8 bit, takimi siê nie przejmujemy
+	  abort();
   }
   } else {
- //b³¹d
+	  abort();
   }
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -262,7 +246,7 @@ void Scena::step(int i)
 {
 	double tx, tz;
 	double dox, doz;
-	dist = 0.03;
+	dist = 0.1;
     tx = dist * sin(hangle * pi);
 	tz = dist * cos(hangle * pi);
 	dox = ox + 2*(i * tx);
@@ -275,14 +259,14 @@ void Scena::step(int i)
 	{
 		if ((oy >= 3.0) && (oy < 6.5))
 		{
-			// jest na 0 i jest przed nim ramp
+			// on the floor, on ramp
 			if ((tab[nx][nz][1]!= NULL)&&(tab[nx][nz][1]->type==Ramp))
 			{
 				ox = dox - (i * tx);
 				oz = doz - (i * tz);
 			}
 
-			// jest na 0 i nie ma przed nim nic
+			// on the floor, nothing ahead
 			if (tab[nx][nz][1] == NULL)
 			{
 				ox = dox - (i * tx);
@@ -292,14 +276,14 @@ void Scena::step(int i)
 
 		if ((oy >= 6.5) && (oy < 10.5))
 		{
-			// jest na 1 i jest przed nim ramp
+			// on 1st floor, on ramp
 			if ((tab[nx][nz][2]!= NULL)&&(tab[nx][nz][2]->type==Ramp))
 			{
 				ox = dox - (i * tx);
 				oz = doz - (i * tz);
 			}
 
-			// jest na 1 i nie ma przed nim nic
+			// 1st floor, nothing ahead
 			if ((tab[nx][nz][2] == NULL)&&(tab[nx][nz][1] != NULL))
 			{
 				ox = dox - (i * tx);
@@ -310,7 +294,7 @@ void Scena::step(int i)
 		if ((oy >= 10.5))
 		{
 
-			// jest na 2 i nie ma przed nim nic
+			// 2nd floor, nothing ahead
 			if ((tab[nx][nz][3] == NULL)&&(tab[nx][nz][2] != NULL))
 			{
 				ox = dox - (i * tx);

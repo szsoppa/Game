@@ -8,7 +8,8 @@ class cube : public Obiekt
 	public:
         cube();
         cube(int X, int Y, int Z);
-        void draw(void);
+        void draw(glm::mat4 ModelView);
+		void side();
 		double getY(float x, float z);
 };
 

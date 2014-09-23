@@ -18,7 +18,7 @@ double cube::getY(float x, float z)
 	return 0.0;
 }
 
-void wall() {
+void cube::side() {
 	glEnable(GL_NORMALIZE);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -33,60 +33,59 @@ void wall() {
 }
 
 
-void cube::draw(void) {
+void cube::draw(glm::mat4 ModelView) {
 
  /*   glPushMatrix();
     glTranslatef(x, y, z);
 
-    wall();
+    side();
     glRotatef(90.f, 1.0f, 0.0f, 0.0f);
 
-	wall();
+	side();
     glRotatef(270.f, 1.0f, 0.0f, 0.0f);
 
-	 wall();
+	 side();
     glRotatef(90.f, 0.0f, 1.0f, 0.0f);
 
-	 wall();
+	 side();
     glRotatef(270.f, 0.0f, 1.0f, 0.0f);
 
 
-   wall();
+   side();
 
     glRotatef(180.f, 0.0f, 1.0f, 0.0f);
-    wall();
+    side();
      glPopMatrix();
 
 	 */
-	glLoadIdentity();
+	//glLoadIdentity();
+	//glm::mat4 M;
+	//glLoadMatrixf(glm::value_ptr(V*M));
+
 	glm::mat4 M;
-	glLoadMatrixf(glm::value_ptr(V*M));
-    glTranslatef(x, y, z);
-    
-	glPushMatrix();
-	glRotatef(90.f, 1.0f, 0.0f, 0.0f);
-	wall();
-	glPopMatrix();
+	M = glm::translate(M, glm::vec3(x+2, y, z+2));
+	M=ModelView*M;
+	glLoadMatrixf(glm::value_ptr(M));
 
-	glPushMatrix();
-	glRotatef(270.f, 1.0f, 0.0f, 0.0f);	
-	wall();
-	glPopMatrix();
+		glLoadMatrixf(glm::value_ptr(glm::rotate(M,90.f,glm::vec3(1.0f, 0.0f, 0.0f))));
+		side();
+	glLoadMatrixf(glm::value_ptr(M));
 
-	glPushMatrix();
-	glRotatef(90.f, 0.0f, 1.0f, 0.0f);
-	wall();
-	glPopMatrix();
+		glLoadMatrixf(glm::value_ptr(glm::rotate(M,270.f,glm::vec3(1.0f, 0.0f, 0.0f))));
+		side();
+	glLoadMatrixf(glm::value_ptr(M));
+		glLoadMatrixf(glm::value_ptr(glm::rotate(M,90.f,glm::vec3( 0.0f, 1.0f, 0.0f))));
+		side();
+	glLoadMatrixf(glm::value_ptr(M));
+		glLoadMatrixf(glm::value_ptr(glm::rotate(M,270.f,glm::vec3( 0.0f, 1.0f, 0.0f))));
+		side();
+	glLoadMatrixf(glm::value_ptr(M));
+		glLoadMatrixf(glm::value_ptr(glm::rotate(M,180.f,glm::vec3( 0.0f, 1.0f, 0.0f))));
+		side();
+	glLoadMatrixf(glm::value_ptr(M));
 
-	glPushMatrix();
-	glRotatef(270.f, 0.0f, 1.0f, 0.0f);
-	wall();
-	glPopMatrix();
+		side();
 
-	glPushMatrix();
-	glRotatef(180.f, 0.0f, 1.0f, 0.0f);
-    wall();
-	glPopMatrix();
-
-	glPopMatrix();
-	 }
+		glLoadIdentity();
+	glLoadMatrixf(glm::value_ptr(ModelView));
+}

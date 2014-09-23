@@ -18,14 +18,15 @@ class Obiekt
 		Obiekt();
 		Obiekt(float X, float Y, float Z);
 		void setPosition(float X, float Y, float Z);
-		virtual void draw(void);
+		virtual void draw(glm::mat4 ModelView);
+		virtual void side();
 		
 		void calc(void);
 
 		objectType type;
 		virtual double getY(float x, float z) { return 0; };
 
-		int kierunek[2];
+		int direction[2];
 };
 
 

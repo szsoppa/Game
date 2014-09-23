@@ -34,12 +34,22 @@ int InitGL(GLvoid)
 	glEnable(GL_DEPTH_TEST);								
 	glDepthFunc(GL_LEQUAL);									
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);		
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	//*
-	float pos [] = {20.0, 10.0, 20.0, 0.0};
-	glLightfv(GL_LIGHT0, GL_POSITION, pos); // swiatlo
-	//*/
+// Somewhere in the initialization part of your program…
+glEnable(GL_LIGHTING);
+glEnable(GL_LIGHT0);
+ 
+// Create light components
+float ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+float diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
+float specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+float position[] = { -100.5f, 20.0f, -4.0f, 1.0f };
+ 
+// Assign created components to GL_LIGHT0
+glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+glLightfv(GL_LIGHT0, GL_POSITION, position);
+
     
     glEnable(GL_BLEND);
 	glEnable(GL_COLOR_MATERIAL);
@@ -58,17 +68,18 @@ int DrawGLScene(GLvoid)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
     glLoadIdentity();
 	glm::mat4 M;
-	V = glm::lookAt(
+	glm::mat4 V = glm::lookAt(
 		glm::vec3(scena.ox, scena.oy, scena.oz),
 		glm::vec3(scena.cz + scena.ox, scena.cy + scena.oy, scena.cx + scena.oz),
 		glm::vec3(0.0, 1.0, 0.0)
 		);	
 	glm::mat4 P=glm::perspective(90.0f, 1.0f, 0.1f, 50.0f);
+	glm::mat4 ModelView = V;
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(glm::value_ptr(P));
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(glm::value_ptr(V*M));
-	scena.draw();
+	scena.draw(ModelView);
 	return TRUE;										
 }
 
@@ -332,12 +343,12 @@ int WINAPI WinMain(	HINSTANCE	hInstance,HINSTANCE	hPrevInstance,LPSTR lpCmdLine,
 					SwapBuffers(hDC);				
 					if(keys[VK_RIGHT])
 					{
-						scena.addHangle(-0.7);
+						scena.addHangle(-2.0);
 					}
 
 					if(keys[VK_LEFT])
 					{
-						scena.addHangle(0.7);
+						scena.addHangle(2.0);
 					}
 
 					if(keys[VK_UP])

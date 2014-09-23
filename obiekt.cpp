@@ -26,7 +26,9 @@ void Obiekt::setPosition(float X, float Y, float Z)
 	dy = 0.005f;
 }
 
-void Obiekt::draw(void) { }
+void Obiekt::draw(glm::mat4 ModelView) { }
+
+void Obiekt::side() { }
 
 
 void Obiekt::calc(void)
